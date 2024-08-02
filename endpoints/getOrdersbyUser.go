@@ -7,7 +7,7 @@ import (
 )
 
 func GetOrdersbyUser(c *fiber.Ctx, dbInterface database.DatabaseStruct) error {
-	orderId := new(types.GetOrder)
+	orderId := new(types.OrderGetUser)
 
 	if err := c.BodyParser(orderId); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -17,48 +17,51 @@ func GetOrdersbyUser(c *fiber.Ctx, dbInterface database.DatabaseStruct) error {
 
 	db, _ := dbInterface.GetDbData()
 
-	query := `SELECT * FROM order_list WHERE uid = $1`
-	rows, err := db.Query(query, orderId.ID)
+	query := `SELECT * FROM order_list WHERE user_id = $1`
+	rows, err := db.Query(query, orderId.UserID)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Failed to get order",
 		})
 	}
 
-	query1 := `SELECT * FROM order_details WHERE order_id = $1`
-	rows1, err := db.Query(query1, orderId.ID)
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": err.Error(),
-		})
-	}
-
-	order := types.OrderGet{}
-	orderItems := []types.OrderItems{}
+	orderList := []types.OrderGet{}
 
 	for rows.Next() {
-		err = rows.Scan(&order.ID, &order.UserID, &order.RestID, &order.IsPaid, &order.IsCash, &order.Time, &order.OrderStatus)
+		order := types.OrderGet{}
+		err := rows.Scan(&order.ID, &order.UserID, &order.RestID, &order.IsPaid, &order.IsCash, &order.Time, &order.OrderStatus)
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-				"error": err.Error(),
+				"error": "Failed to get order",
 			})
 		}
-	}
 
-	for rows1.Next() {
-		orderItem := types.OrderItems{}
-		err = rows1.Scan(&orderItem.ID, &orderItem.OrderID, &orderItem.FoodID, &orderItem.Quantity)
+		orderItemsQuery := `SELECT * FROM order_details WHERE order_id = $1`
+		orderItemsRows, err := db.Query(orderItemsQuery, order.ID)
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-				"error": err.Error(),
+				"error": "Failed to get order",
 			})
 		}
-		orderItems = append(orderItems, orderItem)
-	}
 
-	order.OrderItems = orderItems
+		orderItems := []types.OrderItems{}
+
+		for orderItemsRows.Next() {
+			orderItem := types.OrderItems{}
+			err := orderItemsRows.Scan(&orderItem.ID, &orderItem.OrderID, &orderItem.FoodID, &orderItem.Quantity)
+			if err != nil {
+				return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+					"error": "Failed to get order",
+				})
+			}
+			orderItems = append(orderItems, orderItem)
+		}
+
+		order.OrderItems = orderItems
+		orderList = append(orderList, order)
+	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"order": order,
+		"orders": orderList,
 	})
 }
