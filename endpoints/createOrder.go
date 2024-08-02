@@ -1,6 +1,8 @@
 package endpoints
 
 import (
+	"fmt"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/surya-nara0123/swiftship/database"
 	"github.com/surya-nara0123/swiftship/helperfunction"
@@ -20,10 +22,13 @@ func CreateOrder(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
 	// Generate a unique ID for the order
 	orderId := helperfunction.GenerateUniqueInt()
 
+	// printing the order details
+	fmt.Println(*order)
 	// generate unique id for order items
 	itemsIDList := []int32{}
 	for i := 0; i < len(order.OrderItems); i++ {
-		itemsIDList[i] = helperfunction.GenerateUniqueInt()
+		fmt.Println("hiii")
+		itemsIDList = append(itemsIDList, helperfunction.GenerateUniqueInt())
 	}
 
 	// Get the database connection
@@ -39,7 +44,7 @@ func CreateOrder(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
 		})
 	}
 	for i := 0; i < len(order.OrderItems); i++ {
-		_, err = db.Query(query1, itemsIDList[i], order.OrderItems[i].OrderID, order.OrderItems[i].FoodID, order.OrderItems[i].Quantity)
+		_, err = db.Query(query1, itemsIDList[i], orderId, order.OrderItems[i].FoodID, order.OrderItems[i].Quantity)
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 				"error": err.Error(),

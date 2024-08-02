@@ -27,6 +27,9 @@ type Restuarant struct {
 type RestaurantGet struct {
 	ID int `json:"id"`
 }
+type RestaurantGetName struct {
+	Name string `json:"name"`
+}
 
 type FoodItem struct {
 	Name        string `json:"name"`
@@ -81,4 +84,12 @@ type OrderGet struct {
 	Time        string
 	OrderStatus int
 	OrderItems  []OrderItems
+}
+
+type OrderGetUser struct {
+	UserID int `json:"user_id"`
+}
+
+type OrderGetRestaurant struct {
+	RestID int `json:"rest_id"`
 }

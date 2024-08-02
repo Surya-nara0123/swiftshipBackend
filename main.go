@@ -39,7 +39,7 @@ func main() {
 		return endpoints.AddRestaurant(c, DbInterface)
 	})
 	app.Get("/getrestaurant", func(c *fiber.Ctx) error {
-		return endpoints.GetRestaurant(c, DbInterface)
+		return endpoints.GetRestaurantbyID(c, DbInterface)
 	})
 	app.Post("/createorder", func(c *fiber.Ctx) error {
 		return endpoints.CreateOrder(c, DbInterface)
@@ -49,6 +49,15 @@ func main() {
 	})
 	app.Get("/getuserbyusername", func(c *fiber.Ctx) error {
 		return endpoints.GetUserbyUsername(c, DbInterface)
+	})
+	app.Get("/getrestaurantbyname", func(c *fiber.Ctx) error {
+		return endpoints.GetRestaurantbyName(c, DbInterface)
+	})
+	app.Get("/getordersbyrestaurant", func(c *fiber.Ctx) error {
+		return endpoints.GetOrdersbyRestaurant(c, DbInterface)
+	})
+	app.Get("/getordersbyuser", func(c *fiber.Ctx) error {
+		return endpoints.GetOrdersbyUser(c, DbInterface)
 	})
 
 	// Start the server

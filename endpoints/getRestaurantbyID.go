@@ -9,7 +9,7 @@ import (
 	"github.com/surya-nara0123/swiftship/types"
 )
 
-func GetRestaurant(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
+func GetRestaurantbyID(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
 	restaurant := new(types.RestaurantGet)
 
 	err := c.BodyParser(restaurant)
