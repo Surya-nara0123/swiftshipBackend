@@ -10,7 +10,7 @@ import (
 )
 
 func GetRestaurantbyName(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
-	restaurant := new(types.RestaurantGet)
+	restaurant := new(types.RestaurantGetName)
 
 	err := c.BodyParser(restaurant)
 	if err != nil {
@@ -32,9 +32,9 @@ func GetRestaurantbyName(c *fiber.Ctx, DbInterface database.DatabaseStruct) erro
 	FROM 
 		restaurant_data 
 	WHERE 
-		restaurant_data.uid = $1`
+		restaurant_data.name = $1`
 
-	row := db.QueryRow(query, restaurant.ID)
+	row := db.QueryRow(query, restaurant.Name)
 	err = row.Scan(&id, &name, &location, &isVeg)
 	if err != nil {
 		fmt.Println("Error: ", err)

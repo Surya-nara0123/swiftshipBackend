@@ -6,9 +6,9 @@ import (
 	"github.com/google/uuid"
 )
 
-func GenerateUniqueInt() int32 {
+func GenerateUniqueInt() int64 {
 	u := uuid.New()
 	h := fnv.New32a()
 	h.Write(u[:])
-	return int32(h.Sum32())
+	return int64(h.Sum32())
 }

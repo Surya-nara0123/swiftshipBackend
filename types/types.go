@@ -36,8 +36,26 @@ type FoodItem struct {
 	Price       int    `json:"price"`
 	IsVeg       bool   `json:"is_veg"`
 	RestID      int    `json:"rest_id"`
-	Ingredients string `json:"ingrediets"`
+	Ingredients string `json:"ingredients"`
 	IsRegular   bool   `json:"is_regular"`
+}
+
+type CostBody struct {
+	OrderID int `json:"order_id"`
+}
+
+type FoodItemGetResp struct {
+	ID          int
+	Name        string
+	Price       int
+	IsVeg       bool
+	RestID      int
+	Ingredients string
+	IsRegular   bool
+}
+
+type FoodItemGet struct {
+	ID int `json:"id"`
 }
 
 type FoodRating struct {
@@ -62,6 +80,16 @@ type Order struct {
 	IsCash      bool         `json:"is_cash"`
 	OrderStatus int          `json:"order_status"`
 	OrderItems  []OrderItems `json:"order_items"`
+}
+
+type OrderResp struct {
+	ID          int
+	UserID      int
+	RestID      int
+	IsPaid      bool
+	IsCash      bool
+	OrderStatus int
+	OrderItems  []OrderItems
 }
 
 type OrderItems struct {
@@ -92,4 +120,8 @@ type OrderGetUser struct {
 
 type OrderGetRestaurant struct {
 	RestID int `json:"rest_id"`
+}
+
+type OrderGetStatus struct {
+	OrderStatus int `json:"order_status"`
 }

@@ -25,7 +25,7 @@ func CreateOrder(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
 	// printing the order details
 	fmt.Println(*order)
 	// generate unique id for order items
-	itemsIDList := []int32{}
+	itemsIDList := []int64{}
 	for i := 0; i < len(order.OrderItems); i++ {
 		fmt.Println("hiii")
 		itemsIDList = append(itemsIDList, helperfunction.GenerateUniqueInt())

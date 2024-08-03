@@ -59,6 +59,24 @@ func main() {
 	app.Get("/getordersbyuser", func(c *fiber.Ctx) error {
 		return endpoints.GetOrdersbyUser(c, DbInterface)
 	})
+	app.Get("/getactiveorders", func(c *fiber.Ctx) error {
+		return endpoints.GetActiveOrders(c, DbInterface)
+	})
+	app.Get("/getunpaidorders", func(c *fiber.Ctx) error {
+		return endpoints.GetUnpaidOrders(c, DbInterface)
+	})
+	app.Post("/addfooditems", func(c *fiber.Ctx) error {
+		return endpoints.AddFoodItems(c, DbInterface)
+	})
+	app.Get("/getfooditemsbyrestaurant", func(c *fiber.Ctx) error {
+		return endpoints.GetFoodItemsByRestaurant(c, DbInterface)
+	})
+	app.Post("/getordercost", func(c *fiber.Ctx) error {
+		return endpoints.GetOrderCost(c, DbInterface)
+	})
+	// app.Get("/getfooditemsbyid", func(c *fiber.Ctx) error {
+	// 	return endpoints.GetFoodItemsByID(c, DbInterface)
+	// })
 
 	// Start the server
 	port := os.Getenv("PORT")
