@@ -125,3 +125,8 @@ type OrderGetRestaurant struct {
 type OrderGetStatus struct {
 	OrderStatus int `json:"order_status"`
 }
+
+type OrderStatus struct {
+	OrderID int `json:"order_id"`
+	Status  int `json:"status"`
+}

@@ -6,7 +6,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 	_ "github.com/lib/pq"
 	"github.com/surya-nara0123/swiftship/database"
-	"github.com/surya-nara0123/swiftship/helperfunction"
 	"github.com/surya-nara0123/swiftship/types"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -25,7 +24,11 @@ func GetUserbyUsername(c *fiber.Ctx, DbInterface database.DatabaseStruct) error 
 	db, _ := DbInterface.GetDbData()
 
 	err = db.Ping()
-	helperfunction.CheckError(err)
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
 
 	fmt.Println("Connected!")
 
@@ -48,7 +51,11 @@ func GetUserbyUsername(c *fiber.Ctx, DbInterface database.DatabaseStruct) error 
 
 	row := db.QueryRow(query, user.Name)
 	err = row.Scan(&id, &name, &email, &mobile, &userType, &hashedPassword)
-	helperfunction.CheckError(err)
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
 
 	fmt.Println(id, name, email, mobile, userType)
 

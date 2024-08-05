@@ -74,6 +74,9 @@ func main() {
 	app.Post("/getordercost", func(c *fiber.Ctx) error {
 		return endpoints.GetOrderCost(c, DbInterface)
 	})
+	app.Post("/updateorderstatus", func(c *fiber.Ctx) error {
+		return endpoints.UpdateOrderStatus(c, DbInterface)
+	})
 	// app.Get("/getfooditemsbyid", func(c *fiber.Ctx) error {
 	// 	return endpoints.GetFoodItemsByID(c, DbInterface)
 	// })
