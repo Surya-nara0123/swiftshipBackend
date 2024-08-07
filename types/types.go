@@ -18,10 +18,27 @@ type User struct {
 	Password string `json:"password"`
 }
 
+type UserDetails struct {
+	UID      int64  `bun:",pk,autoincrement"`
+	Username string `bun:"username,notnull"`
+	Email    string `bun:"email,notnull"`
+	Mobile   int    `bun:"mobile,notnull"`
+	UserType int    `bun:"user_type,notnull"`
+}
+
+type AuthDetails struct {
+	UserID   int    `bun:",pk,notnull"`
+	Password string `bun:"password,notnull"`
+}
+
 type Restuarant struct {
 	Name     string `json:"name"`
 	Location string `json:"location"`
 	IsVeg    bool   `json:"is_veg"`
+}
+
+type RestaurantGetResp struct {
+	ID int
 }
 
 type RestaurantGet struct {

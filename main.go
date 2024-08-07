@@ -77,6 +77,18 @@ func main() {
 	app.Post("/updateorderstatus", func(c *fiber.Ctx) error {
 		return endpoints.UpdateOrderStatus(c, DbInterface)
 	})
+	app.Get("/getresturantid", func(c *fiber.Ctx) error {
+		return endpoints.GetRestaurantID(c, DbInterface)
+	})
+	app.Get("/getuserid", func(c *fiber.Ctx) error {
+		return endpoints.GetUserID(c, DbInterface)
+	})
+	// app.Get("/getcompletedorders", func(c *fiber.Ctx) error {
+	// 	return endpoints.GetCompletedOrders(c, DbInterface)
+	// })
+	// app.Get("/getcancelledorders", func(c *fiber.Ctx) error {
+	// 	return endpoints.GetCancelledOrders(c, DbInterface)
+	// })
 	// app.Get("/getfooditemsbyid", func(c *fiber.Ctx) error {
 	// 	return endpoints.GetFoodItemsByID(c, DbInterface)
 	// })
