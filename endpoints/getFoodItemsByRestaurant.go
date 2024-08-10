@@ -9,7 +9,7 @@ import (
 )
 
 func GetFoodItemsByRestaurant(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
-	foodItem := new(types.FoodItemGet)
+	foodItem := new(types.FoodItemsRestaurantReq)
 
 	err := c.BodyParser(foodItem)
 	if err != nil {
@@ -20,26 +20,10 @@ func GetFoodItemsByRestaurant(c *fiber.Ctx, DbInterface database.DatabaseStruct)
 
 	db, _ := DbInterface.GetDbData()
 
-	rows, err := db.Query("SELECT * FROM food_items WHERE restuarant_id = $1", foodItem.ID)
-	if err != nil {
-		fmt.Println("Error: ", err.Error())
-		return c.Status(500).JSON(fiber.Map{
-			"error": err.Error(),
-		})
-	}
+	foodItems := []types.FoodItems{}
+	db.Find(&foodItems, "restaurant_id = ?", foodItem.RestID)
 
-	foodItems := []types.FoodItemGetResp{}
-	for rows.Next() {
-		foodItem := types.FoodItemGetResp{}
-		err = rows.Scan(&foodItem.ID, &foodItem.RestID, &foodItem.Name, &foodItem.Ingredients, &foodItem.IsVeg, &foodItem.IsRegular, &foodItem.Price)
-		if err != nil {
-			fmt.Println("Error: ", err.Error())
-			return c.Status(500).JSON(fiber.Map{
-				"error": err.Error(),
-			})
-		}
-		foodItems = append(foodItems, foodItem)
-	}
+	fmt.Println(foodItems)
 
 	return c.JSON(fiber.Map{
 		"food_items": foodItems,

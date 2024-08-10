@@ -7,9 +7,9 @@ import (
 )
 
 func GetOrdersbyUser(c *fiber.Ctx, dbInterface database.DatabaseStruct) error {
-	orderId := new(types.OrderGetUser)
+	order := new(types.OrderUserIDReq)
 
-	if err := c.BodyParser(orderId); err != nil {
+	if err := c.BodyParser(order); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "Could not parse JSON",
 		})
@@ -17,51 +17,12 @@ func GetOrdersbyUser(c *fiber.Ctx, dbInterface database.DatabaseStruct) error {
 
 	db, _ := dbInterface.GetDbData()
 
-	query := `SELECT * FROM order_list WHERE user_id = $1`
-	rows, err := db.Query(query, orderId.UserID)
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Failed to get order",
-		})
-	}
+	orderList := []types.OrderList{}
 
-	orderList := []types.OrderGet{}
-
-	for rows.Next() {
-		order := types.OrderGet{}
-		err := rows.Scan(&order.ID, &order.UserID, &order.RestID, &order.IsPaid, &order.IsCash, &order.Time, &order.OrderStatus)
-		if err != nil {
-			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-				"error": "Failed to get order",
-			})
-		}
-
-		orderItemsQuery := `SELECT * FROM order_details WHERE order_id = $1`
-		orderItemsRows, err := db.Query(orderItemsQuery, order.ID)
-		if err != nil {
-			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-				"error": "Failed to get order",
-			})
-		}
-
-		orderItems := []types.OrderItems{}
-
-		for orderItemsRows.Next() {
-			orderItem := types.OrderItems{}
-			err := orderItemsRows.Scan(&orderItem.ID, &orderItem.OrderID, &orderItem.FoodID, &orderItem.Quantity)
-			if err != nil {
-				return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-					"error": "Failed to get order",
-				})
-			}
-			orderItems = append(orderItems, orderItem)
-		}
-
-		order.OrderItems = orderItems
-		orderList = append(orderList, order)
-	}
+	db.Find(&orderList, "rest_id = ?", order.UserID)
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"orders": orderList,
 	})
+
 }

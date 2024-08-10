@@ -10,7 +10,7 @@ import (
 )
 
 func AddRestaurant(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
-	restaurant := new(types.Restuarant)
+	restaurant := new(types.RestuarantReq)
 
 	err := c.BodyParser(restaurant)
 	if err != nil {
@@ -26,11 +26,18 @@ func AddRestaurant(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
 
 	db, _ := DbInterface.GetDbData()
 
-	_, err = db.Exec("INSERT INTO restaurant_data (uid, name, location, is_veg) VALUES ($1, $2, $3, $4)", uid, restaurant.Name, restaurant.Location, restaurant.IsVeg)
-	if err != nil {
-		fmt.Println("Error: ", err.Error())
-		return c.Status(500).JSON(fiber.Map{
-			"error": "Error while creating restaurant",
+	restaurantData := &types.RestaurantData{
+		UID:      uid,
+		Name:     restaurant.Name,
+		Location: restaurant.Location,
+		IsVeg:    restaurant.IsVeg,
+	}
+
+	res := db.Create(restaurantData)
+
+	if res.Error != nil {
+		return c.Status(400).JSON(fiber.Map{
+			"error": res.Error.Error(),
 		})
 	}
 

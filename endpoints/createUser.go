@@ -35,13 +35,6 @@ func CreateUser(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
 	// generate unique id
 	uid := helperfunction.GenerateUniqueInt()
 
-	err = db.Ping()
-	if err != nil {
-		return c.Status(400).JSON(fiber.Map{
-			"error": err.Error(),
-		})
-	}
-
 	fmt.Println("Connected!")
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
@@ -53,17 +46,34 @@ func CreateUser(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
 
 	fmt.Println(string(hashedPassword))
 
-	_, err = db.Exec("INSERT INTO user_details (uid, username, email, mobile, user_type) VALUES ($1, $2, $3, $4, $5)", uid, user.Name, user.Email, user.Mobile, user.UserType)
-	if err != nil {
+	// create a new user record
+	newUser := &types.UserDetails{
+		UID:      uid,
+		Username: user.Name,
+		Email:    user.Email,
+		Mobile:   user.Mobile,
+		UserType: user.UserType,
+	}
+
+	// insert the new user record into the user_details table
+	result := db.Create(newUser)
+	if result.Error != nil {
 		return c.Status(400).JSON(fiber.Map{
-			"error": err.Error(),
+			"error": result.Error.Error(),
 		})
 	}
 
-	_, err = db.Exec("INSERT INTO auth_details (user_id, password) VALUES ($1, $2)", uid, string(hashedPassword))
-	if err != nil {
+	// insert the auth details in the auth_details table
+	authDetails := &types.AuthDetails{
+		UserID:   uid,
+		Password: string(hashedPassword),
+	}
+
+	result = db.Create(authDetails)
+
+	if result.Error != nil {
 		return c.Status(400).JSON(fiber.Map{
-			"error": err.Error(),
+			"error": result.Error.Error(),
 		})
 	}
 

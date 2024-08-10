@@ -9,7 +9,7 @@ import (
 )
 
 func GetUserID(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
-	user := new(types.UserGet)
+	user := new(types.UserIdReq2)
 
 	err := c.BodyParser(user)
 	if err != nil {
@@ -21,31 +21,11 @@ func GetUserID(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
 
 	db, _ := DbInterface.GetDbData()
 
-	err = db.Ping()
-	if err != nil {
-		return c.Status(500).JSON(fiber.Map{
-			"error": err.Error(),
-		})
-	}
+	userDetails := new(types.UserDetails)
 
-	fmt.Println("Connected!")
+	db.First(&userDetails, "username = ?", user.Username)
 
-	var id int
-	query := `
-	SELECT 
-		uid
-	FROM 
-		user_details 
-	WHERE 
-		username = $1`
-
-	row := db.QueryRow(query, user.ID)
-	err = row.Scan(&id)
-	if err != nil {
-		return c.Status(500).JSON(fiber.Map{
-			"error": err.Error(),
-		})
-	}
+	id := userDetails.UID
 
 	fmt.Println(id)
 	return c.JSON(fiber.Map{

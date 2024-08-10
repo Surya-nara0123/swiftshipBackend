@@ -34,29 +34,57 @@ func CreateOrder(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
 	// Get the database connection
 	db, _ := DbInterface.GetDbData()
 
-	// Add the order to the database
-	query := `INSERT INTO order_list (uid, user_id, restaurant_id, is_paid, is_cash, order_status_id) VALUES ($1, $2, $3, $4, $5, $6)`
-	query1 := `INSERT INTO order_details (uid, order_id, food_id, quantity) VALUES ($1, $2, $3, $4)`
-	_, err := db.Query(query, orderId, order.UserID, order.RestID, order.IsPaid, order.IsCash, order.OrderStatus)
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": err.Error(),
-		})
+	db.SavePoint("create_order")
+	// Create a new order in the database
+	newOrder := &types.OrderList{
+		UID:           orderId,
+		UserId:        order.UserId,
+		RestuarantID:  order.RestuarantID,
+		IsPaid:        order.IsPaid,
+		IsCash:        order.IsCash,
+		TimeCreated:   order.TimeCreated,
+		OrderStatusId: order.OrderStatusId,
 	}
-	for i := 0; i < len(order.OrderItems); i++ {
-		_, err = db.Query(query1, itemsIDList[i], orderId, order.OrderItems[i].FoodID, order.OrderItems[i].Quantity)
-		if err != nil {
-			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-				"error": err.Error(),
-			})
-		}
-	}
+
+	err := db.Create(newOrder).Error
 	if err != nil {
+		fmt.Println("Error: ", err.Error())
+		db.RollbackTo("save_point")
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": err.Error(),
 		})
 	}
 
+	// Create new order items for every order in the database
+	for i := 0; i < len(order.OrderItems); i++ {
+
+		foodId := order.OrderItems[i].Item
+		//check if the food item exists
+		foodItem := types.FoodItems{}
+		db.First(&foodItem, "item = ?", foodId)
+		if foodItem.UID == 0 {
+			db.RollbackTo("save_point")
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"error": "Food item does not exist",
+			})
+		}
+
+		newOrderItem := &types.OrderDetails{
+			UID:      itemsIDList[i],
+			OrderId:  orderId,
+			FoodId:   foodItem.UID,
+			Quantity: order.OrderItems[i].Quantity,
+		}
+
+		err = db.Create(newOrderItem).Error
+		if err != nil {
+			fmt.Println("Error: ", err.Error())
+			db.RollbackTo("save_point")
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": err.Error(),
+			})
+		}
+	}
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": "Order added successfully",
 	})

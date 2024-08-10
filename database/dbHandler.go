@@ -3,6 +3,9 @@ package database
 import (
 	"database/sql"
 	"fmt"
+
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 type DatabaseInterface interface {
@@ -12,7 +15,8 @@ type DatabaseInterface interface {
 
 type DatabaseStruct struct {
 	connString string
-	db         *sql.DB
+	db         *gorm.DB
+	sqlDB      *sql.DB
 	err        error
 }
 
@@ -22,11 +26,13 @@ func CheckError(err error) {
 	}
 }
 
-func (s *DatabaseStruct) OpenConn() (*sql.DB, error) {
+func (s *DatabaseStruct) OpenConn() (*gorm.DB, error) {
 	s.connString = "postgresql://postgres:@localhost:5432/swiftship?sslmode=disable"
-	s.db, s.err = sql.Open("postgres", s.connString)
+	s.sqlDB, s.err = sql.Open("postgres", s.connString)
 	CheckError(s.err)
-	s.err = s.db.Ping()
+	s.db, s.err = gorm.Open(postgres.New(postgres.Config{
+		Conn: s.sqlDB,
+	}), &gorm.Config{})
 	CheckError(s.err)
 
 	fmt.Println("Connected!")
@@ -34,9 +40,10 @@ func (s *DatabaseStruct) OpenConn() (*sql.DB, error) {
 }
 
 func (s *DatabaseStruct) CloseConn() {
-	s.db.Close()
+	s.sqlDB.Close()
+	fmt.Println("Connection Closed")
 }
 
-func (s *DatabaseStruct) GetDbData() (*sql.DB, string) {
+func (s *DatabaseStruct) GetDbData() (*gorm.DB, string) {
 	return s.db, s.connString
 }

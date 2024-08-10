@@ -11,7 +11,7 @@ import (
 )
 
 func GetUserbyID(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
-	user := new(types.UserGet)
+	user := new(types.UserIdReq)
 
 	err := c.BodyParser(user)
 	if err != nil {
@@ -23,41 +23,32 @@ func GetUserbyID(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
 
 	db, _ := DbInterface.GetDbData()
 
-	err = db.Ping()
-	if err != nil {
-		return c.Status(500).JSON(fiber.Map{
-			"error": err.Error(),
-		})
-	}
-
 	fmt.Println("Connected!")
 
-	var id int
+	var id int64
 	var name, email string
-	var mobile, userType int
+	var mobile int64
+	var userType int
 	var hashedPassword string
-	query := `
-	SELECT 
-		user_details.uid, user_details.username, user_details.email, user_details.mobile, 
-		user_details.user_type, auth_details.password 
-	FROM 
-		user_details 
-	INNER JOIN 
-		auth_details 
-	ON 
-		user_details.uid = auth_details.user_id 
-	WHERE 
-		user_details.uid = $1`
 
-	row := db.QueryRow(query, user.ID)
-	err = row.Scan(&id, &name, &email, &mobile, &userType, &hashedPassword)
-	if err != nil {
-		return c.Status(500).JSON(fiber.Map{
-			"error": err.Error(),
-		})
-	}
+	authDetails := new(types.AuthDetails)
+
+	db.First(&authDetails, user.ID)
+
+	userDetails := new(types.UserDetails)
+
+	db.First(&userDetails, user.ID)
+
+	fmt.Println(userDetails)
 
 	fmt.Println(id, name, email, mobile, userType)
+
+	id = userDetails.UID
+	name = userDetails.Username
+	email = userDetails.Email
+	mobile = userDetails.Mobile
+	userType = userDetails.UserType
+	hashedPassword = authDetails.Password
 
 	err = bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(user.Password))
 	if err != nil {

@@ -7,56 +7,46 @@ import (
 )
 
 func GetOrderbyID(c *fiber.Ctx, dbInterface database.DatabaseStruct) error {
-	orderId := new(types.GetOrder)
 
-	if err := c.BodyParser(orderId); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Could not parse JSON",
+	orderIdStruct := new(types.OrderIDReq)
+
+	err := c.BodyParser(orderIdStruct)
+	if err != nil {
+		return c.Status(400).JSON(fiber.Map{
+			"error": "Cannot parse JSON",
 		})
 	}
 
 	db, _ := dbInterface.GetDbData()
 
-	query := `SELECT * FROM order_list WHERE uid = $1`
-	rows, err := db.Query(query, orderId.ID)
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Failed to get order",
-		})
-	}
+	orderData := types.OrderList{}
 
-	query1 := `SELECT * FROM order_details WHERE order_id = $1`
-	rows1, err := db.Query(query1, orderId.ID)
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": err.Error(),
-		})
-	}
+	db.First(&orderData, "uid = ?", orderIdStruct.ID)
 
-	order := types.OrderGet{}
-	orderItems := []types.OrderItems{}
+	orderDetails := []types.OrderDetails{}
 
-	for rows.Next() {
-		err = rows.Scan(&order.ID, &order.UserID, &order.RestID, &order.IsPaid, &order.IsCash, &order.Time, &order.OrderStatus)
-		if err != nil {
-			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-				"error": err.Error(),
-			})
+	db.Find(&orderDetails, "order_id = ?", orderData.UID)
+
+	/*
+		type Order struct {
+			UserId        int64  `json:"user_id"`
+			RestuarantID  int64  `json:"rest_id"`
+			IsPaid        bool   `json:"is_paid"`
+			IsCash        bool   `json:"is_cash"`
+			TimeCreated   string `json:"timestamp"`
+			OrderStatusId int    `json:"order_status"`
+			OrderItems    []OrderItemReq
 		}
+	*/
+	order := types.Order{
+		UserId:        orderData.UserId,
+		RestuarantID:  orderData.RestuarantID,
+		IsPaid:        orderData.IsPaid,
+		IsCash:        orderData.IsCash,
+		TimeCreated:   orderData.TimeCreated,
+		OrderStatusId: orderData.OrderStatusId,
+		OrderItems:    []types.OrderItemReq{},
 	}
-
-	for rows1.Next() {
-		orderItem := types.OrderItems{}
-		err = rows1.Scan(&orderItem.ID, &orderItem.OrderID, &orderItem.FoodID, &orderItem.Quantity)
-		if err != nil {
-			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-				"error": err.Error(),
-			})
-		}
-		orderItems = append(orderItems, orderItem)
-	}
-
-	order.OrderItems = orderItems
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"order": order,

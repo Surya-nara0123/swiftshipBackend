@@ -1,54 +1,62 @@
 package types
 
-type UserGet struct {
-	ID       int    `json:"id"`
-	Password string `json:"password"`
-}
-
-type UserGetUsername struct {
-	Name     string `json:"name"`
-	Password string `json:"password"`
-}
-
 type User struct {
 	Name     string `json:"name"`
 	Email    string `json:"email"`
-	Mobile   int    `json:"mobile"`
+	Mobile   int64  `json:"mobile"`
 	UserType int    `json:"user_type"`
 	Password string `json:"password"`
 }
 
 type UserDetails struct {
-	UID      int64  `bun:",pk,autoincrement"`
+	UID      int64  `bun:"uid,pk,notnull"`
 	Username string `bun:"username,notnull"`
 	Email    string `bun:"email,notnull"`
-	Mobile   int    `bun:"mobile,notnull"`
+	Mobile   int64  `bun:"mobile,notnull"`
 	UserType int    `bun:"user_type,notnull"`
 }
 
 type AuthDetails struct {
-	UserID   int    `bun:",pk,notnull"`
+	UserID   int64  `bun:"user_id,pk,notnull"`
 	Password string `bun:"password,notnull"`
 }
 
-type Restuarant struct {
+type UserIdReq struct {
+	ID       int    `json:"id"`
+	Password string `json:"password"`
+}
+
+type UserUsernameReq struct {
+	Username string `json:"name"`
+	Password string `json:"password"`
+}
+
+type UserIdReq2 struct {
+	Username string `json:"name"`
+}
+
+type RestuarantReq struct {
 	Name     string `json:"name"`
 	Location string `json:"location"`
 	IsVeg    bool   `json:"is_veg"`
 }
 
-type RestaurantGetResp struct {
-	ID int
-}
-
-type RestaurantGet struct {
+type RestuarantIdReq struct {
 	ID int `json:"id"`
 }
-type RestaurantGetName struct {
+
+type RestuarantNameReq struct {
 	Name string `json:"name"`
 }
 
-type FoodItem struct {
+type RestaurantData struct {
+	UID      int64  `bun:"uid,pk,notnull"`
+	Name     string `bun:"name,notnull"`
+	Location string `bun:"location,notnull"`
+	IsVeg    bool   `bun:"is_veg,notnull"`
+}
+
+type Food struct {
 	Name        string `json:"name"`
 	Price       int    `json:"price"`
 	IsVeg       bool   `json:"is_veg"`
@@ -57,93 +65,69 @@ type FoodItem struct {
 	IsRegular   bool   `json:"is_regular"`
 }
 
+type FoodItems struct {
+	UID          int64  `bun:"uid,pk,notnull"`
+	Item         string `bun:"name,notnull"`
+	Price        int    `bun:"price,notnull"`
+	IsVeg        bool   `bun:"is_veg,notnull"`
+	RestaurantId int    `bun:"rest_id,notnull"`
+	Ingredients  string `bun:"ingredients,notnull"`
+	IsRegular    bool   `bun:"is_regular,notnull"`
+}
+
+type FoodItemsRestaurantReq struct {
+	RestID int `json:"rest_id"`
+}
+
+type OrderList struct {
+	UID           int64  `bun:"uid,pk,notnull"`
+	UserId        int64  `bun:"user_id,notnull"`
+	RestuarantID  int64  `bun:"rest_id,notnull"`
+	IsPaid        bool   `bun:"is_paid,notnull"`
+	IsCash        bool   `bun:"is_cash,notnull"`
+	TimeCreated   string `bun:"timestamp,notnull"`
+	OrderStatusId int    `bun:"order_status,notnull"`
+}
+
+type OrderDetails struct {
+	UID      int64 `bun:"uid,pk,notnull"`
+	OrderId  int64 `bun:"order_id,notnull"`
+	FoodId   int64 `bun:"food_id,notnull"`
+	Quantity int   `bun:"quantity,notnull"`
+}
+
+type OrderItemReq struct {
+	Item     string `json:"item"`
+	Quantity int    `json:"quantity"`
+}
+
+type OrderIDReq struct {
+	ID int `json:"id"`
+}
+
+type OrderRestIDReq struct {
+	RestID int `json:"id"`
+}
+
+type OrderUserIDReq struct {
+	UserID int `json:"id"`
+}
+
+type Order struct {
+	UserId        int64  `json:"user_id"`
+	RestuarantID  int64  `json:"rest_id"`
+	IsPaid        bool   `json:"is_paid"`
+	IsCash        bool   `json:"is_cash"`
+	TimeCreated   string `json:"timestamp"`
+	OrderStatusId int    `json:"order_status"`
+	OrderItems    []OrderItemReq
+}
+
 type CostBody struct {
 	OrderID int `json:"order_id"`
 }
 
-type FoodItemGetResp struct {
-	ID          int
-	Name        string
-	Price       int
-	IsVeg       bool
-	RestID      int
-	Ingredients string
-	IsRegular   bool
-}
-
-type FoodItemGet struct {
-	ID int `json:"id"`
-}
-
-type FoodRating struct {
-	FoodID   int    `json:"food_id"`
-	UserID   int    `json:"user_id"`
-	Rating   int    `json:"rating"`
-	Comments string `json:"comments"`
-}
-
-type RestuarantRating struct {
-	ID       int    `json:"id"`
-	RestID   int    `json:"rest_id"`
-	UserID   int    `json:"user_id"`
-	Rating   int    `json:"rating"`
-	Comments string `json:"comments"`
-}
-
-type Order struct {
-	UserID      int          `json:"user_id"`
-	RestID      int          `json:"rest_id"`
-	IsPaid      bool         `json:"is_paid"`
-	IsCash      bool         `json:"is_cash"`
-	OrderStatus int          `json:"order_status"`
-	OrderItems  []OrderItems `json:"order_items"`
-}
-
-type OrderResp struct {
-	ID          int
-	UserID      int
-	RestID      int
-	IsPaid      bool
-	IsCash      bool
-	OrderStatus int
-	OrderItems  []OrderItems
-}
-
-type OrderItems struct {
-	ID       int `json:"id"`
-	OrderID  int `json:"order_id"`
-	FoodID   int `json:"food_id"`
-	Quantity int `json:"quantity"`
-}
-
-type GetOrder struct {
-	ID int `json:"id"`
-}
-
-type OrderGet struct {
-	ID          int
-	UserID      int
-	RestID      int
-	IsPaid      bool
-	IsCash      bool
-	Time        string
-	OrderStatus int
-	OrderItems  []OrderItems
-}
-
-type OrderGetUser struct {
-	UserID int `json:"user_id"`
-}
-
-type OrderGetRestaurant struct {
-	RestID int `json:"rest_id"`
-}
-
-type OrderGetStatus struct {
-	OrderStatus int `json:"order_status"`
-}
-
-type OrderStatus struct {
+type OrderStatusReq struct {
 	OrderID int `json:"order_id"`
 	Status  int `json:"status"`
 }

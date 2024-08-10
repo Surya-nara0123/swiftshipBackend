@@ -10,7 +10,7 @@ import (
 )
 
 func GetRestaurantbyName(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
-	restaurant := new(types.RestaurantGetName)
+	restaurant := new(types.RestuarantNameReq)
 
 	err := c.BodyParser(restaurant)
 	if err != nil {
@@ -22,35 +22,16 @@ func GetRestaurantbyName(c *fiber.Ctx, DbInterface database.DatabaseStruct) erro
 
 	db, _ := DbInterface.GetDbData()
 
-	var id int
-	var name, location string
-	var isVeg bool
+	restaurantData := types.RestaurantData{}
 
-	query := `
-	SELECT 
-		restaurant_data.uid, restaurant_data.name, restaurant_data.location, restaurant_data.is_veg
-	FROM 
-		restaurant_data 
-	WHERE 
-		restaurant_data.name = $1`
-
-	row := db.QueryRow(query, restaurant.Name)
-	err = row.Scan(&id, &name, &location, &isVeg)
-	if err != nil {
-		fmt.Println("Error: ", err)
-		return c.Status(404).JSON(fiber.Map{
-			"error": "Restaurant not found",
-		})
-	}
-
-	fmt.Println(id, name, location, isVeg)
+	db.First(&restaurantData, "name = ?", restaurant.Name)
 
 	return c.JSON(fiber.Map{
 		"result": map[string]interface{}{
-			"uid":      id,
-			"name":     name,
-			"location": location,
-			"is_veg":   isVeg,
+			"uid":      restaurantData.UID,
+			"name":     restaurantData.Name,
+			"location": restaurantData.Location,
+			"is_veg":   restaurantData.IsVeg,
 		},
 		"status": "ok",
 	})

@@ -9,7 +9,7 @@ import (
 )
 
 func GetRestaurantID(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
-	restaurant := new(types.RestaurantGetName)
+	restaurant := new(types.RestuarantNameReq)
 
 	err := c.BodyParser(restaurant)
 	if err != nil {
@@ -21,25 +21,14 @@ func GetRestaurantID(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
 
 	db, _ := DbInterface.GetDbData()
 
-	var uid int
-	query := `
-	SELECT 
-		uid
-	FROM 
-		restaurant_data 
-	WHERE 
-		name = $1`
+	restaurantData := types.RestaurantData{}
 
-	row := db.QueryRow(query, restaurant.Name)
-	err = row.Scan(&uid)
-	if err != nil {
-		return c.Status(500).JSON(fiber.Map{
-			"error": err.Error(),
-		})
-	}
+	db.First(&restaurantData, "name = ?", restaurant.Name)
 
-	fmt.Println(uid)
 	return c.JSON(fiber.Map{
-		"uid": uid,
+		"result": map[string]interface{}{
+			"uid": restaurantData.UID,
+		},
+		"status": "ok",
 	})
 }

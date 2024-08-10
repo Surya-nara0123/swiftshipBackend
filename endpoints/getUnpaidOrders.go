@@ -10,47 +10,38 @@ func GetUnpaidOrders(c *fiber.Ctx, dbInterface database.DatabaseStruct) error {
 
 	db, _ := dbInterface.GetDbData()
 
-	query := `SELECT * FROM order_list WHERE is_paid = false`
-	rows, err := db.Query(query)
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": err.Error(),
-		})
-	}
+	orders := []types.OrderList{}
 
-	orderList := []types.OrderGet{}
+	db.Find(&orders, "is_paid != ?", "false")
 
-	for rows.Next() {
-		order := types.OrderGet{}
-		err := rows.Scan(&order.ID, &order.UserID, &order.RestID, &order.IsPaid, &order.IsCash, &order.Time, &order.OrderStatus)
-		if err != nil {
-			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-				"error": err.Error(),
-			})
-		}
+	orderList := []types.Order{}
+	for i := 0; i < len(orders); i++ {
+		orderDetails := []types.OrderDetails{}
 
-		orderItemsQuery := `SELECT * FROM order_details WHERE order_id = $1`
-		orderItemsRows, err := db.Query(orderItemsQuery, order.ID)
-		if err != nil {
-			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-				"error": err.Error(),
-			})
-		}
+		db.Find(&orderDetails, "order_id = ?", orders[i].UID)
 
-		orderItems := []types.OrderItems{}
-
-		for orderItemsRows.Next() {
-			orderItem := types.OrderItems{}
-			err := orderItemsRows.Scan(&orderItem.ID, &orderItem.OrderID, &orderItem.FoodID, &orderItem.Quantity)
-			if err != nil {
-				return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-					"error": err.Error(),
-				})
+		orderDetails1 := []types.OrderItemReq{}
+		for i := 0; i < len(orderDetails); i++ {
+			foodId := orderDetails[i].FoodId
+			food := types.FoodItems{}
+			db.First(&food, "uid = ?", foodId)
+			orderItem := types.OrderItemReq{
+				Item:     food.Item,
+				Quantity: orderDetails[i].Quantity,
 			}
-			orderItems = append(orderItems, orderItem)
+			orderDetails1 = append(orderDetails1, orderItem)
 		}
 
-		order.OrderItems = orderItems
+		order := types.Order{
+			UserId:        orders[i].UserId,
+			RestuarantID:  orders[i].RestuarantID,
+			IsPaid:        orders[i].IsPaid,
+			IsCash:        orders[i].IsCash,
+			TimeCreated:   orders[i].TimeCreated,
+			OrderStatusId: orders[i].OrderStatusId,
+			OrderItems:    orderDetails1,
+		}
+
 		orderList = append(orderList, order)
 	}
 

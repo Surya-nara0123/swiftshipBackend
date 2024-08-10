@@ -10,15 +10,15 @@ import (
 )
 
 func AddFoodItems(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
-	foodItem := new(types.FoodItem)
+	food := new(types.Food)
 
-	err := c.BodyParser(foodItem)
+	err := c.BodyParser(food)
 	if err != nil {
 		return c.Status(400).JSON(fiber.Map{
 			"error": "Cannot parse JSON",
 		})
 	}
-	fmt.Println(*foodItem)
+	fmt.Println(*food)
 
 	//generate unique id
 	uid := helperfunction.GenerateUniqueInt()
@@ -26,9 +26,16 @@ func AddFoodItems(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
 
 	db, _ := DbInterface.GetDbData()
 
-	// fmt.Println(foodItem.Ingredients)
+	foodItem := &types.FoodItems{
+		UID:          uid,
+		Item:         food.Name,
+		Price:        food.Price,
+		IsVeg:        food.IsVeg,
+		RestaurantId: food.RestID,
+		IsRegular:    food.IsRegular,
+	}
 
-	_, err = db.Exec("INSERT INTO food_items (uid, restuarant_id, item, ingredients, is_veg, is_regular, price) VALUES ($1, $2, $3, $4, $5, $6, $7)", uid, foodItem.RestID, foodItem.Name, foodItem.Ingredients, foodItem.IsVeg, foodItem.IsRegular, foodItem.Price)
+	err = db.Create(foodItem).Error
 	if err != nil {
 		fmt.Println("Error: ", err.Error())
 		return c.Status(500).JSON(fiber.Map{
