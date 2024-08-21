@@ -28,9 +28,11 @@ func UpdateOrderStatus(c *fiber.Ctx, DbInterface database.DatabaseStruct) error 
 			"error": "Order not found",
 		})
 	}
-
+	if orderStatus.Status == 2 && order.OrderStatusId == 1 {
+		order.IsPaid = true
+	}
 	order.OrderStatusId = orderStatus.Status
-	db.Save(&order)
+	db.Where("uid = ?", orderStatus.OrderID).Save(&order)
 
 	fmt.Println("Order status updated!")
 	return c.JSON(fiber.Map{

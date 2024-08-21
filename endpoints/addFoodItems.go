@@ -31,7 +31,7 @@ func AddFoodItems(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
 		Item:         food.Name,
 		Price:        food.Price,
 		IsVeg:        food.IsVeg,
-		RestaurantId: food.RestID,
+		RestuarantId: food.RestID,
 		IsRegular:    food.IsRegular,
 	}
 

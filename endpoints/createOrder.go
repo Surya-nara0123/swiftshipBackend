@@ -39,7 +39,7 @@ func CreateOrder(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
 	newOrder := &types.OrderList{
 		UID:           orderId,
 		UserId:        order.UserId,
-		RestuarantID:  order.RestuarantID,
+		RestaurantID:  order.RestuarantID,
 		IsPaid:        order.IsPaid,
 		IsCash:        order.IsCash,
 		TimeCreated:   order.TimeCreated,
@@ -87,5 +87,6 @@ func CreateOrder(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
 	}
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": "Order added successfully",
+		"order":   orderId,
 	})
 }

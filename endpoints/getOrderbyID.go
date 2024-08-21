@@ -37,15 +37,33 @@ func GetOrderbyID(c *fiber.Ctx, dbInterface database.DatabaseStruct) error {
 			OrderStatusId int    `json:"order_status"`
 			OrderItems    []OrderItemReq
 		}
+		type OrderItemReq struct {
+			Item     string `json:"item"`
+			Quantity int    `json:"quantity"`
+		}
 	*/
+
 	order := types.Order{
 		UserId:        orderData.UserId,
-		RestuarantID:  orderData.RestuarantID,
+		RestuarantID:  orderData.RestaurantID,
 		IsPaid:        orderData.IsPaid,
 		IsCash:        orderData.IsCash,
 		TimeCreated:   orderData.TimeCreated,
 		OrderStatusId: orderData.OrderStatusId,
 		OrderItems:    []types.OrderItemReq{},
+	}
+
+	for i := 0; i < len(orderDetails); i++ {
+		foodId := orderDetails[i].FoodId
+		food := types.FoodItems{}
+		db.First(&food, "uid = ?", foodId)
+
+		orderItem := types.OrderItemReq{
+			Item:     food.Item,
+			Quantity: orderDetails[i].Quantity,
+		}
+
+		order.OrderItems = append(order.OrderItems, orderItem)
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{

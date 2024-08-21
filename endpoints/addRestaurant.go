@@ -7,6 +7,8 @@ import (
 	"github.com/surya-nara0123/swiftship/database"
 	"github.com/surya-nara0123/swiftship/helperfunction"
 	"github.com/surya-nara0123/swiftship/types"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 func AddRestaurant(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
@@ -27,13 +29,35 @@ func AddRestaurant(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
 	db, _ := DbInterface.GetDbData()
 
 	restaurantData := &types.RestaurantData{
-		UID:      uid,
-		Name:     restaurant.Name,
-		Location: restaurant.Location,
-		IsVeg:    restaurant.IsVeg,
+		UID:        uid,
+		Name:       restaurant.Name,
+		Location:   restaurant.Location,
+		IsVeg:      restaurant.IsVeg,
+		VendorName: restaurant.VendorName,
+		StatusId:   1,
 	}
 
 	res := db.Create(restaurantData)
+
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(restaurant.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return c.Status(400).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+
+	// insert the auth details in the auth_details table
+	authDetails := &types.AuthDetails{
+		UserID:   uid,
+		Password: string(hashedPassword),
+	}
+
+	result := db.Create(authDetails)
+	if result.Error != nil {
+		return c.Status(400).JSON(fiber.Map{
+			"error": result.Error.Error(),
+		})
+	}
 
 	if res.Error != nil {
 		return c.Status(400).JSON(fiber.Map{

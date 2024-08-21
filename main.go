@@ -12,6 +12,7 @@ import (
 	_ "github.com/surya-nara0123/swiftship/types"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
 func main() {
@@ -27,6 +28,13 @@ func main() {
 	godotenv.Load()
 	app := fiber.New()
 
+	app.Use(cors.New(cors.Config{
+		AllowOrigins:     "http://127.0.0.1, http://localhost:3000, http://192.168.161.135:3000", // Adjust to match your frontend
+		AllowHeaders:     "Origin, Content-Type, Accept, Authorization",                          // Include any custom headers you use
+		AllowMethods:     "GET,POST,HEAD,PUT,DELETE,OPTIONS",                                     // Ensure all necessary methods are allowed
+		AllowCredentials: true,                                                                   // Enable if your frontend uses cookies or authentication tokens
+	}))
+
 	// Define routes
 	app.Get("/readiness", handlerReadiness)
 
@@ -34,35 +42,44 @@ func main() {
 	app.Post("/createuser", func(c *fiber.Ctx) error {
 		return endpoints.CreateUser(c, DbInterface)
 	})
-	app.Get("/getuserbyid", func(c *fiber.Ctx) error {
+	app.Post("/getuserbyid", func(c *fiber.Ctx) error {
 		return endpoints.GetUserbyID(c, DbInterface)
 	})
-	app.Get("/getuserid", func(c *fiber.Ctx) error {
+	app.Post("/getuserid", func(c *fiber.Ctx) error {
 		return endpoints.GetUserID(c, DbInterface)
 	})
-	app.Get("/getuserbyusername", func(c *fiber.Ctx) error {
+	app.Post("/getuserbyusername", func(c *fiber.Ctx) error {
 		return endpoints.GetUserbyUsername(c, DbInterface)
+	})
+	app.Post("/updateUser", func(c *fiber.Ctx) error {
+		return endpoints.UpdateUser(c, DbInterface)
 	})
 
 	// restaurant endpoints
 	app.Post("/addrestaurant", func(c *fiber.Ctx) error {
 		return endpoints.AddRestaurant(c, DbInterface)
 	})
-	app.Get("/getrestaurantbyid", func(c *fiber.Ctx) error {
+	app.Post("/getrestaurantbyid", func(c *fiber.Ctx) error {
 		return endpoints.GetRestaurantbyID(c, DbInterface)
 	})
-	app.Get("/getresturantid", func(c *fiber.Ctx) error {
+	app.Post("/getresturantid", func(c *fiber.Ctx) error {
 		return endpoints.GetRestaurantID(c, DbInterface)
 	})
-	app.Get("/getrestaurantbyname", func(c *fiber.Ctx) error {
+	app.Post("/getrestaurantbyname", func(c *fiber.Ctx) error {
 		return endpoints.GetRestaurantbyName(c, DbInterface)
+	})
+	app.Get("/getrestaurants", func(c *fiber.Ctx) error {
+		return endpoints.GetRestaurants(c, DbInterface)
 	})
 
 	// food endpoints
 	app.Post("/addfooditems", func(c *fiber.Ctx) error {
 		return endpoints.AddFoodItems(c, DbInterface)
 	})
-	app.Get("/getfooditemsbyrestaurant", func(c *fiber.Ctx) error {
+	app.Get("/getFooditems", func(c *fiber.Ctx) error {
+		return endpoints.GetFoodItems(c, DbInterface)
+	})
+	app.Post("/getfooditemsbyrestaurant", func(c *fiber.Ctx) error {
 		return endpoints.GetFoodItemsByRestaurant(c, DbInterface)
 	})
 	// app.Get("/getfooditemsbyid", func(c *fiber.Ctx) error {
@@ -70,34 +87,34 @@ func main() {
 	// })
 
 	// order endpoints
-	// app.Post("/createorder", func(c *fiber.Ctx) error {
-	// 	return endpoints.CreateOrder(c, DbInterface)
-	// })
-	// app.Get("/getorderid", func(c *fiber.Ctx) error {
-	// 	return endpoints.GetOrderbyID(c, DbInterface)
-	// })
-	// app.Get("/getordersbyrestaurant", func(c *fiber.Ctx) error {
-	// 	return endpoints.GetOrdersbyRestaurant(c, DbInterface)
-	// })
-	// app.Get("/getordersbyuser", func(c *fiber.Ctx) error {
-	// 	return endpoints.GetOrdersbyUser(c, DbInterface)
-	// })
-	// app.Get("/getactiveorders", func(c *fiber.Ctx) error {
-	// 	return endpoints.GetActiveOrders(c, DbInterface)
-	// })
-	// app.Get("/getunpaidorders", func(c *fiber.Ctx) error {
-	// 	return endpoints.GetUnpaidOrders(c, DbInterface)
-	// })
-	// app.Post("/getordercost", func(c *fiber.Ctx) error {
-	// 	return endpoints.GetOrderCost(c, DbInterface)
-	// })
-	// app.Post("/updateorderstatus", func(c *fiber.Ctx) error {
-	// 	return endpoints.UpdateOrderStatus(c, DbInterface)
-	// })
+	app.Post("/createorder", func(c *fiber.Ctx) error {
+		return endpoints.CreateOrder(c, DbInterface)
+	})
+	app.Post("/getorderid", func(c *fiber.Ctx) error {
+		return endpoints.GetOrderbyID(c, DbInterface)
+	})
+	app.Post("/getordersbyrestaurant", func(c *fiber.Ctx) error {
+		return endpoints.GetOrdersbyRestaurant(c, DbInterface)
+	})
+	app.Post("/getordersbyuser", func(c *fiber.Ctx) error {
+		return endpoints.GetOrdersbyUser(c, DbInterface)
+	})
+	app.Get("/getactiveorders", func(c *fiber.Ctx) error {
+		return endpoints.GetActiveOrders(c, DbInterface)
+	})
+	app.Get("/getunpaidorders", func(c *fiber.Ctx) error {
+		return endpoints.GetUnpaidOrders(c, DbInterface)
+	})
+	app.Post("/getordercost", func(c *fiber.Ctx) error {
+		return endpoints.GetOrderCost(c, DbInterface)
+	})
+	app.Post("/updateorderstatus", func(c *fiber.Ctx) error {
+		return endpoints.UpdateOrderStatus(c, DbInterface)
+	})
 
-	// app.Get("/getcompletedorders", func(c *fiber.Ctx) error {
-	// 	return endpoints.GetCompletedOrders(c, DbInterface)
-	// })
+	app.Get("/getcompletedorders", func(c *fiber.Ctx) error {
+		return endpoints.GetCompletedOrders(c, DbInterface)
+	})
 	// app.Get("/getcancelledorders", func(c *fiber.Ctx) error {
 	// 	return endpoints.GetCancelledOrders(c, DbInterface)
 	// })

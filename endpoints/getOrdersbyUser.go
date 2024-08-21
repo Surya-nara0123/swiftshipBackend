@@ -19,7 +19,7 @@ func GetOrdersbyUser(c *fiber.Ctx, dbInterface database.DatabaseStruct) error {
 
 	orderList := []types.OrderList{}
 
-	db.Find(&orderList, "rest_id = ?", order.UserID)
+	db.Find(&orderList, "user_id = ?", order.UserID)
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"orders": orderList,

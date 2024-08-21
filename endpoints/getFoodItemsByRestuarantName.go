@@ -8,8 +8,8 @@ import (
 	"github.com/surya-nara0123/swiftship/types"
 )
 
-func GetFoodItemsByRestaurant(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
-	foodItem := new(types.FoodItemsRestaurantReq)
+func GetFoodItemsByRestaurantName(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
+	foodItem := new(types.FoodItemsRestaurantNameReq)
 
 	err := c.BodyParser(foodItem)
 	if err != nil {
@@ -21,7 +21,7 @@ func GetFoodItemsByRestaurant(c *fiber.Ctx, DbInterface database.DatabaseStruct)
 	db, _ := DbInterface.GetDbData()
 
 	foodItems := []types.FoodItems{}
-	db.Find(&foodItems, "restuarant_id = ?", foodItem.RestID)
+	db.Find(&foodItems, "restuarant_id = ?", foodItem.Name)
 
 	fmt.Println(foodItems)
 

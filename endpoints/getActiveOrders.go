@@ -10,15 +10,15 @@ func GetActiveOrders(c *fiber.Ctx, dbInterface database.DatabaseStruct) error {
 
 	db, _ := dbInterface.GetDbData()
 
-	orders := []types.OrderList{}
+	order := []types.OrderList{}
 
-	db.Find(&orders, "order_status_id != ?", "0")
+	db.Find(&order, "order_status_id != ? AND order_status_id != 5", "0")
 
 	orderList := []types.Order{}
-	for i := 0; i < len(orders); i++ {
+	for i := 0; i < len(order); i++ {
 		orderDetails := []types.OrderDetails{}
 
-		db.Find(&orderDetails, "order_id = ?", orders[i].UID)
+		db.Find(&orderDetails, "order_id = ?", order[i].UID)
 
 		orderDetails1 := []types.OrderItemReq{}
 		for i := 0; i < len(orderDetails); i++ {
@@ -33,12 +33,12 @@ func GetActiveOrders(c *fiber.Ctx, dbInterface database.DatabaseStruct) error {
 		}
 
 		order := types.Order{
-			UserId:        orders[i].UserId,
-			RestuarantID:  orders[i].RestuarantID,
-			IsPaid:        orders[i].IsPaid,
-			IsCash:        orders[i].IsCash,
-			TimeCreated:   orders[i].TimeCreated,
-			OrderStatusId: orders[i].OrderStatusId,
+			UserId:        order[i].UserId,
+			RestuarantID:  order[i].RestaurantID,
+			IsPaid:        order[i].IsPaid,
+			IsCash:        order[i].IsCash,
+			TimeCreated:   order[i].TimeCreated,
+			OrderStatusId: order[i].OrderStatusId,
 			OrderItems:    orderDetails1,
 		}
 

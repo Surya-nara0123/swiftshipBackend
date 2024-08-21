@@ -26,10 +26,18 @@ func GetUserbyUsername(c *fiber.Ctx, DbInterface database.DatabaseStruct) error 
 	var hashedPassword string
 	userDetails := new(types.UserDetails)
 
-	db.First(&userDetails, user.Username)
+	a := db.First(&userDetails, "username = ?", user.Username)
 	authDetails := new(types.AuthDetails)
-
-	db.First(&authDetails, userDetails.UID)
+	restaurant := types.RestaurantData{}
+	fmt.Println("hiiii", *a)
+	if a.Error != nil {
+		fmt.Printf("User not found! %v\n", a.Error)
+		db.First(&restaurant, "vendor_name = ?", user.Username)
+		fmt.Println("restaurant", restaurant)
+		db.First(&authDetails, restaurant.UID)
+	} else {
+		db.First(&authDetails, userDetails.UID)
+	}
 
 	hashedPassword = authDetails.Password
 
@@ -42,14 +50,28 @@ func GetUserbyUsername(c *fiber.Ctx, DbInterface database.DatabaseStruct) error 
 	}
 
 	fmt.Println("Password correct!")
-	return c.JSON(fiber.Map{
-		"status": "ok",
-		"user": fiber.Map{
-			"id":        userDetails.UID,
-			"name":      userDetails.Username,
-			"email":     userDetails.Email,
-			"mobile":    userDetails.Mobile,
-			"user_type": userDetails.UserType,
-		},
-	})
+	if a.Error == nil {
+		return c.JSON(fiber.Map{
+			"status": "ok",
+			"user": fiber.Map{
+				"id":        userDetails.UID,
+				"name":      userDetails.Username,
+				"email":     userDetails.Email,
+				"mobile":    userDetails.Mobile,
+				"user_type": userDetails.UserType,
+			},
+		})
+	} else {
+		return c.JSON(fiber.Map{
+			"status": "ok",
+			"resturant": fiber.Map{
+				"id":          restaurant.UID,
+				"name":        restaurant.Name,
+				"location":    restaurant.Location,
+				"is_veg":      restaurant.IsVeg,
+				"vendor_name": restaurant.VendorName,
+				"user_type":   2,
+			},
+		})
+	}
 }

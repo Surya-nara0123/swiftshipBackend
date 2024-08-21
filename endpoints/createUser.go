@@ -18,7 +18,7 @@ func CreateUser(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
 	err := c.BodyParser(user)
 	if err != nil {
 		return c.Status(400).JSON(fiber.Map{
-			"error": "Cannot parse JSON",
+			"error": err.Error(),
 		})
 	}
 	fmt.Println(*user)

@@ -27,7 +27,7 @@ func CheckError(err error) {
 }
 
 func (s *DatabaseStruct) OpenConn() (*gorm.DB, error) {
-	s.connString = "postgresql://postgres:@localhost:5432/swiftship?sslmode=disable"
+	s.connString = "postgresql://Rishabh%27s_owner:anqWUul3BVb9@ep-spring-hat-a1k7bhz4.ap-southeast-1.aws.neon.tech/Rishabh%27s?sslmode=require"
 	s.sqlDB, s.err = sql.Open("postgres", s.connString)
 	CheckError(s.err)
 	s.db, s.err = gorm.Open(postgres.New(postgres.Config{
