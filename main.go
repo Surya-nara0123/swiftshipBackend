@@ -122,7 +122,7 @@ func main() {
 	// Start the server
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "3000"
+		port = "8080"
 	}
-	log.Fatalln(app.Listen(fmt.Sprintf(":%v", port)))
+	log.Fatalln(app.Listen(fmt.Sprintf("0.0.0.0:%v", port)))
 }
