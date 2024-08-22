@@ -29,10 +29,10 @@ func main() {
 	app := fiber.New()
 
 	app.Use(cors.New(cors.Config{
-		AllowOrigins:     "http://127.0.0.1, http://localhost:3000, http://192.168.161.135:3000, localhost:3000", // Adjust to match your frontend
-		AllowHeaders:     "Origin, Content-Type, Accept, Authorization",                                          // Include any custom headers you use
-		AllowMethods:     "GET,POST,HEAD,PUT,DELETE,OPTIONS",                                                     // Ensure all necessary methods are allowed
-		AllowCredentials: true,                                                                                   // Enable if your frontend uses cookies or authentication tokens
+		AllowOrigins:     "*",                                           // Adjust to match your frontend
+		AllowHeaders:     "Origin, Content-Type, Accept, Authorization", // Include any custom headers you use
+		AllowMethods:     "GET,POST,HEAD,PUT,DELETE,OPTIONS",            // Ensure all necessary methods are allowed
+		AllowCredentials: false,                                         // Enable if your frontend uses cookies or authentication tokens
 	}))
 
 	// Define routes
