@@ -33,6 +33,7 @@ func AddFoodItems(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
 		IsVeg:        food.IsVeg,
 		RestuarantId: food.RestID,
 		IsRegular:    food.IsRegular,
+		Ingredients:  food.Ingredients,
 	}
 
 	err = db.Create(foodItem).Error
