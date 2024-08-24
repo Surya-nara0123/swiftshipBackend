@@ -77,13 +77,15 @@ type Food struct {
 }
 
 type FoodItems struct {
-	UID          int64  `bun:"uid,pk,notnull"`
-	RestuarantId int64  `bun:"restuarant_id,notnull"`
-	Item         string `bun:"item,notnull"`
-	Ingredients  string `bun:"ingredients,notnull"`
-	IsVeg        bool   `bun:"is_veg,notnull"`
-	IsRegular    bool   `bun:"is_regular,notnull"`
-	Price        int    `bun:"price,notnull"`
+	UID           int64  `bun:"uid,pk,notnull"`
+	RestuarantId  int64  `bun:"restuarant_id,notnull"`
+	Item          string `bun:"item,notnull"`
+	Ingredients   string `bun:"ingredients,notnull"`
+	IsVeg         bool   `bun:"is_veg,notnull"`
+	IsRegular     bool   `bun:"is_regular,notnull"`
+	Price         int    `bun:"price,notnull"`
+	IsAvailable   bool   `bun:"available,notnull"`
+	AvailableTime int    `bun:"available_time,notnull"`
 }
 
 type FoodItemsRestaurantReq struct {
