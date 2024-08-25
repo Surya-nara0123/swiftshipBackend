@@ -14,7 +14,7 @@ func GetActiveOrders(c *fiber.Ctx, dbInterface database.DatabaseStruct) error {
 
 	db.Find(&order, "order_status_id != ? AND order_status_id != 5", "0")
 
-	orderList := []types.Order{}
+	orderList := []types.OrderCustomer{}
 	for i := 0; i < len(order); i++ {
 		orderDetails := []types.OrderDetails{}
 
@@ -32,7 +32,8 @@ func GetActiveOrders(c *fiber.Ctx, dbInterface database.DatabaseStruct) error {
 			orderDetails1 = append(orderDetails1, orderItem)
 		}
 
-		order := types.Order{
+		order := types.OrderCustomer{
+			UID:           order[i].UID,
 			UserId:        order[i].UserId,
 			RestuarantID:  order[i].RestaurantID,
 			IsPaid:        order[i].IsPaid,

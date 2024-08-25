@@ -149,6 +149,16 @@ type Order struct {
 	OrderStatusId int            `json:"order_status"`
 	OrderItems    []OrderItemReq `json:"order_items"`
 }
+type OrderCustomer struct {
+	UID           int64          `josn:"uid"`
+	UserId        int64          `json:"user_id"`
+	RestuarantID  int64          `json:"rest_id"`
+	IsPaid        bool           `json:"is_paid"`
+	IsCash        bool           `json:"is_cash"`
+	TimeCreated   string         `json:"timestamp"`
+	OrderStatusId int            `json:"order_status"`
+	OrderItems    []OrderItemReq `json:"order_items"`
+}
 
 type OrderVendor struct {
 	UID           int64           `josn:"uid"`
