@@ -179,3 +179,7 @@ type OrderStatusReq struct {
 	OrderID int `json:"order_id"`
 	Status  int `json:"status"`
 }
+
+type RestaurantAvailability struct {
+	FoodId int `json:"food_id"`
+}
