@@ -27,13 +27,15 @@ func AddFoodItems(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
 	db, _ := DbInterface.GetDbData()
 
 	foodItem := &types.FoodItems{
-		UID:          uid,
-		Item:         food.Name,
-		Price:        food.Price,
-		IsVeg:        food.IsVeg,
-		RestuarantId: food.RestID,
-		IsRegular:    food.IsRegular,
-		Ingredients:  food.Ingredients,
+		UID:           uid,
+		Item:          food.Name,
+		Price:         food.Price,
+		IsVeg:         food.IsVeg,
+		RestuarantId:  food.RestID,
+		IsRegular:     food.IsRegular,
+		Ingredients:   food.Ingredients,
+		AvailableTime: food.AvailableTime,
+		IsAvailable:   true,
 	}
 
 	err = db.Create(foodItem).Error

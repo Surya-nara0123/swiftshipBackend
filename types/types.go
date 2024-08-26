@@ -68,12 +68,13 @@ type RestaurantData struct {
 }
 
 type Food struct {
-	Name        string `json:"name"`
-	Price       int    `json:"price"`
-	IsVeg       bool   `json:"is_veg"`
-	RestID      int64  `json:"rest_id"`
-	Ingredients string `json:"ingredients"`
-	IsRegular   bool   `json:"is_regular"`
+	Name          string `json:"name"`
+	Price         int    `json:"price"`
+	IsVeg         bool   `json:"is_veg"`
+	RestID        int64  `json:"rest_id"`
+	Ingredients   string `json:"ingredients"`
+	IsRegular     bool   `json:"is_regular"`
+	AvailableTime int    `json:"available_time"`
 }
 
 type FoodItems struct {
