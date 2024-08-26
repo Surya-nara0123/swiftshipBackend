@@ -88,6 +88,9 @@ func main() {
 	app.Post("/deletefooditem", func(c *fiber.Ctx) error {
 		return endpoints.DeleteFoodItem(c, DbInterface)
 	})
+	app.Post("/editfooditem", func(c *fiber.Ctx) error {
+		return endpoints.EditFoodItem(c, DbInterface)
+	})
 	// app.Get("/getfooditemsbyid", func(c *fiber.Ctx) error {
 	// 	return endpoints.GetFoodItemsByID(c, DbInterface)
 	// })

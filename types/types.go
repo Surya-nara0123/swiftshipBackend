@@ -77,6 +77,17 @@ type Food struct {
 	AvailableTime int    `json:"available_time"`
 }
 
+type EditFoodReq struct {
+	UID           int64  `json:"uid"`
+	Name          string `json:"name"`
+	Price         int    `json:"price"`
+	IsVeg         bool   `json:"is_veg"`
+	RestID        int64  `json:"rest_id"`
+	Ingredients   string `json:"ingredients"`
+	IsRegular     bool   `json:"is_regular"`
+	AvailableTime int    `json:"available_time"`
+}
+
 type FoodItems struct {
 	UID           int64  `bun:"uid,pk,notnull"`
 	RestuarantId  int64  `bun:"restuarant_id,notnull"`
