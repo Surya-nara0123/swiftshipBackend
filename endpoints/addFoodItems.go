@@ -48,6 +48,7 @@ func AddFoodItems(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
 
 	fmt.Println("Food item created!")
 	return c.JSON(fiber.Map{
-		"status": "ok",
+		"status":    "ok",
+		"food_item": foodItem,
 	})
 }
