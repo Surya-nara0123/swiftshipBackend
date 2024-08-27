@@ -30,7 +30,7 @@ func main() {
 
 	app.Use(cors.New(cors.Config{
 		AllowOrigins:     "https://swiftship-nine.vercel.app, http://localhost:3000", // Adjust to match your frontend
-		AllowHeaders:     "Origin, Content-Type, Accept, Authorization",              // Include any custom headers you use
+		AllowHeaders:     "Origin, Content-Type, Accept, Authorization, X-API-Key",   // Adjust to match your frontend
 		AllowMethods:     "GET,POST,HEAD,PUT,DELETE,OPTIONS",                         // Ensure all necessary methods are allowed
 		AllowCredentials: true,                                                       // Enable if your frontend uses cookies or authentication tokens
 	}))
