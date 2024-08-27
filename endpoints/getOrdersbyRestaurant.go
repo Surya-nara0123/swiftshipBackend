@@ -58,11 +58,11 @@ func GetOrdersbyRestaurant(c *fiber.Ctx, dbInterface database.DatabaseStruct) er
 		})
 	}
 
-	if len(orders) == 0 {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"error": "No orders found",
-		})
-	}
+	// if len(orders) == 0 {
+	// 	return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+	// 		"error": "No orders found",
+	// 	})
+	// }
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"orders": orders,
