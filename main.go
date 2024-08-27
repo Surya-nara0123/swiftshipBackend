@@ -39,6 +39,7 @@ func main() {
 		return func(c *fiber.Ctx) error {
 			apiKey := c.Get("X-API-Key")
 			if apiKey != os.Getenv("API_KEY") {
+				fmt.Println(apiKey)
 				return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 					"error": "Unauthorized",
 				})
