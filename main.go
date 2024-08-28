@@ -35,19 +35,6 @@ func main() {
 		AllowCredentials: true,                                                       // Enable if your frontend uses cookies or authentication tokens
 	}))
 
-	app.Use(func() fiber.Handler {
-		return func(c *fiber.Ctx) error {
-			apiKey := c.Get("X-API-Key")
-			if apiKey != os.Getenv("API_KEY") {
-				fmt.Println(os.Getenv("API_KEY"))
-				return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-					"error": "Unauthorized",
-				})
-			}
-			return c.Next()
-		}
-	}())
-
 	// Define routes
 	app.Get("/readiness", handlerReadiness)
 
