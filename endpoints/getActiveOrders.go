@@ -7,6 +7,13 @@ import (
 )
 
 func GetActiveOrders(c *fiber.Ctx, dbInterface database.DatabaseStruct) error {
+	user := types.FoodItemUserId{}
+
+	if err := c.BodyParser(&user); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid request",
+		})
+	}
 
 	db, _ := dbInterface.GetDbData()
 

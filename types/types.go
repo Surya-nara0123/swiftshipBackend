@@ -33,6 +33,10 @@ type UserIdReq struct {
 	Password string `json:"password"`
 }
 
+type FoodItemUserId struct {
+	ID int `json:"id"`
+}
+
 type UserUsernameReq struct {
 	Username string `json:"name"`
 	Password string `json:"password"`
