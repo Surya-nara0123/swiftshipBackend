@@ -19,7 +19,7 @@ func GetActiveOrders(c *fiber.Ctx, dbInterface database.DatabaseStruct) error {
 
 	order := []types.OrderList{}
 
-	db.Find(&order, "order_status_id != ? AND order_status_id != 5", "0")
+	db.Where("user_id = ?", user.ID).Find(&order, "order_status_id != ? AND order_status_id != 5", "0")
 
 	orderList := []types.OrderCustomer{}
 	for i := 0; i < len(order); i++ {
