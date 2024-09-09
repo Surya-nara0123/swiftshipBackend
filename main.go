@@ -121,7 +121,7 @@ func main() {
 		return endpoints.UpdateOrderStatus(c, DbInterface)
 	})
 
-	app.Get("/getcompletedorders", func(c *fiber.Ctx) error {
+	app.Post("/getcompletedorders", func(c *fiber.Ctx) error {
 		return endpoints.GetCompletedOrders(c, DbInterface)
 	})
 	// app.Get("/getcancelledorders", func(c *fiber.Ctx) error {
