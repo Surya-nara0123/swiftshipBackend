@@ -7,12 +7,19 @@ import (
 )
 
 func GetCompletedOrders(c *fiber.Ctx, dbInterface database.DatabaseStruct) error {
+	user := types.FoodItemUserId{}
+
+	if err := c.BodyParser(&user); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid request",
+		})
+	}
 
 	db, _ := dbInterface.GetDbData()
 
 	order := []types.OrderList{}
 
-	db.Find(&order, "order_status_id = ?", "5")
+	db.Where("user_id = ? ", user.ID).Find(&order, "order_status_id = ?", "5")
 
 	orderList := []types.OrderCustomer{}
 	for i := 0; i < len(order); i++ {
