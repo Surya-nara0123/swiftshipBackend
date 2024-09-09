@@ -55,6 +55,9 @@ func CreateUser(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
 		UserType: user.UserType,
 	}
 
+	if user.UserType == 0 {
+		user.UserType = 1
+	}
 	// insert the new user record into the user_details table
 	result := db.Create(newUser)
 	if result.Error != nil {
