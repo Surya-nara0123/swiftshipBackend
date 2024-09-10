@@ -61,6 +61,7 @@ func CreateUser(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
 	// insert the new user record into the user_details table
 	result := db.Create(newUser)
 	if result.Error != nil {
+		fmt.Println(result.Error.Error())
 		return c.Status(400).JSON(fiber.Map{
 			"error": result.Error.Error(),
 		})
