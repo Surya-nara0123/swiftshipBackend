@@ -42,9 +42,9 @@ func main() {
 	app.Post("/createnormaluser", func(c *fiber.Ctx) error {
 		return endpoints.CreateNormalUser(c, DbInterface)
 	})
-	app.Post("/createuser", func(c *fiber.Ctx) error {
-		return endpoints.CreateUser(c, DbInterface)
-	})
+	// app.Post("/createvendoruserv123", func(c *fiber.Ctx) error {
+	// 	return endpoints.CreateUser(c, DbInterface)
+	// })
 	app.Post("/getuserbyid", func(c *fiber.Ctx) error {
 		return endpoints.GetUserbyID(c, DbInterface)
 	})
