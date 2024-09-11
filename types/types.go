@@ -1,10 +1,16 @@
 package types
 
-type User struct {
+type VendorUser struct {
 	Name     string `json:"name"`
 	Email    string `json:"email"`
 	Mobile   int64  `json:"mobile"`
-	UserType int    `json:"user_type"`
+	Password string `json:"password"`
+}
+
+type NormalUser struct {
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Mobile   int64  `json:"mobile"`
 	Password string `json:"password"`
 }
 

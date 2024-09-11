@@ -39,6 +39,9 @@ func main() {
 	app.Get("/readiness", handlerReadiness)
 
 	// user endpoints
+	app.Post("/createnormaluser", func(c *fiber.Ctx) error {
+		return endpoints.CreateNormalUser(c, DbInterface)
+	})
 	app.Post("/createuser", func(c *fiber.Ctx) error {
 		return endpoints.CreateUser(c, DbInterface)
 	})
