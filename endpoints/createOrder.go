@@ -12,7 +12,7 @@ import (
 // CreateOrder is a function that creates a new order in the database
 func CreateOrder(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
 	// Get the order details from the request body
-	order := new(types.Order)
+	order := new(types.SafeOrder)
 	if err := c.BodyParser(order); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "Could not parse JSON",
@@ -40,10 +40,10 @@ func CreateOrder(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
 		UID:           orderId,
 		UserId:        order.UserId,
 		RestaurantID:  order.RestuarantID,
-		IsPaid:        order.IsPaid,
-		IsCash:        order.IsCash,
+		IsPaid:        true,
+		IsCash:        true,
 		TimeCreated:   order.TimeCreated,
-		OrderStatusId: order.OrderStatusId,
+		OrderStatusId: 2,
 	}
 
 	err := db.Create(newOrder).Error

@@ -162,6 +162,13 @@ type OrderUserIDReq struct {
 	UserID int `json:"id"`
 }
 
+type SafeOrder struct {
+	UserId       int64          `json:"user_id"`
+	RestuarantID int64          `json:"rest_id"`
+	TimeCreated  string         `json:"timestamp"`
+	OrderItems   []OrderItemReq `json:"order_items"`
+}
+
 type Order struct {
 	UserId        int64          `json:"user_id"`
 	RestuarantID  int64          `json:"rest_id"`
