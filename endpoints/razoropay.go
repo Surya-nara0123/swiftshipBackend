@@ -36,6 +36,7 @@ func CallRazorPay(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
 		amount += food.Price * order.OrderItems[i].Quantity
 	}
 
+	fmt.Println(amount)
 	razorpayClient := razorpay.NewClient(os.Getenv("RAZORPAY_KEY"), os.Getenv("RAZORPAY_SECRET"))
 	result, err := razorpayClient.Order.Create(
 		map[string]interface{}{
@@ -47,7 +48,7 @@ func CallRazorPay(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
 		nil,
 	)
 	fmt.Println(result, err)
-	hashedAmount, err := bcrypt.GenerateFromPassword([]byte(string(rune(amount))), bcrypt.DefaultCost)
+	hashedAmount, err := bcrypt.GenerateFromPassword([]byte(string(rune(amount))), 123)
 	if err != nil {
 		return c.Status(400).JSON(fiber.Map{
 			"error": "Could not hash password",
