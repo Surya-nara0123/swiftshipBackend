@@ -127,7 +127,7 @@ func main() {
 	app.Post("/getcompletedorders", func(c *fiber.Ctx) error {
 		return endpoints.GetCompletedOrders(c, DbInterface)
 	})
-	app.Get("/razorpay", func(c *fiber.Ctx) error {
+	app.Post("/razorpay", func(c *fiber.Ctx) error {
 		return endpoints.CallRazorPay(c, DbInterface)
 	})
 
