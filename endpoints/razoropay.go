@@ -33,6 +33,7 @@ func CallRazorPay(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
 		// using the food name to get the price of the food
 		food := &types.Food{}
 		db.Where("item = ?", order.OrderItems[i].Item).First(food)
+		fmt.Println(food)
 		amount += food.Price * order.OrderItems[i].Quantity
 	}
 
