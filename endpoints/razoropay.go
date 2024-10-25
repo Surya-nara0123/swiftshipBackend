@@ -9,7 +9,6 @@ import (
 	razorpay "github.com/razorpay/razorpay-go"
 	"github.com/surya-nara0123/swiftship/database"
 	"github.com/surya-nara0123/swiftship/types"
-	"golang.org/x/crypto/bcrypt"
 )
 
 func CallRazorPay(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
@@ -29,11 +28,12 @@ func CallRazorPay(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
 
 	// calculate the amount for the order
 	amount := 0
+	fmt.Println(order.OrderItems)
 	for i := 0; i < len(order.OrderItems); i++ {
 		// using the food name to get the price of the food
-		food := &types.Food{}
-		db.Where("item = ?", order.OrderItems[i].Item).First(food)
-		fmt.Println(food)
+		food := &types.FoodItems{}
+		db.First(&food, "item = ?", order.OrderItems[i].Item)
+		fmt.Println(order.OrderItems[i].Item)
 		amount += food.Price * order.OrderItems[i].Quantity
 	}
 
@@ -49,14 +49,8 @@ func CallRazorPay(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
 		nil,
 	)
 	fmt.Println(result, err)
-	hashedAmount, err := bcrypt.GenerateFromPassword([]byte(string(rune(amount))), 123)
-	if err != nil {
-		return c.Status(400).JSON(fiber.Map{
-			"error": "Could not hash password",
-		})
-	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"amount": hashedAmount,
+		"options": result,
 	})
 }
