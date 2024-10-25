@@ -41,7 +41,7 @@ func CallRazorPay(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
 	razorpayClient := razorpay.NewClient(os.Getenv("RAZORPAY_KEY"), os.Getenv("RAZORPAY_SECRET"))
 	result, err := razorpayClient.Order.Create(
 		map[string]interface{}{
-			"amount":          amount,
+			"amount":          amount * 100,
 			"currency":        "INR",
 			"receipt":         "receipt#1",
 			"partial_payment": false,
