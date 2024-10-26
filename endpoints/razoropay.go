@@ -52,5 +52,6 @@ func CallRazorPay(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"options": result,
+		"key":     os.Getenv("RAZORPAY_KEY"),
 	})
 }
