@@ -9,6 +9,14 @@ import (
 )
 
 func GetUserID(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
+	var cookies map[string]string
+	err1 := c.CookieParser(&cookies)
+	if err1 != nil {
+		return c.Status(400).JSON(fiber.Map{
+			"error": "Cannot parse cookies",
+		})
+	}
+	fmt.Println(cookies)
 	user := new(types.UserIdReq2)
 
 	err := c.BodyParser(user)
