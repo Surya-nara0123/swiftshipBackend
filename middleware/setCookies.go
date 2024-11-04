@@ -1,6 +1,8 @@
 package middleware
 
 import (
+	"fmt"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/surya-nara0123/swiftship/types"
@@ -14,6 +16,7 @@ func SetCookie(c *fiber.Ctx) error {
 			"error": "Invalid request",
 		})
 	}
+	fmt.Println(user)
 	// convert into jwt token
 	// set cookie
 	t := jwt.New(jwt.SigningMethodHS256)
