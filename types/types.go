@@ -15,11 +15,11 @@ type NormalUser struct {
 }
 
 type UserDetails struct {
-	UID      int64  `bun:"uid,pk,notnull"`
-	Username string `bun:"username,notnull"`
-	Email    string `bun:"email,notnull"`
-	Mobile   int64  `bun:"mobile,notnull"`
-	UserType int    `bun:"user_type,notnull"`
+	UID      int64  `bun:"uid,pk,notnull" json:"id"`
+	Username string `bun:"username,notnull" json:"name"`
+	Email    string `bun:"email,notnull" json:"email"`
+	Mobile   int64  `bun:"mobile,notnull" json:"mobile"`
+	UserType int    `bun:"user_type,notnull" json:"user_type"`
 }
 
 type UserUpdateReq struct {
