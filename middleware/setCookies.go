@@ -16,7 +16,7 @@ func SetCookie(c *fiber.Ctx) error {
 			"error": "Invalid request",
 		})
 	}
-	fmt.Println(user)
+	fmt.Println(user, "user")
 	// convert into jwt token
 	// set cookie
 	t := jwt.New(jwt.SigningMethodHS256)
