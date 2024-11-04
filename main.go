@@ -9,6 +9,7 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/surya-nara0123/swiftship/database"
 	"github.com/surya-nara0123/swiftship/endpoints"
+	"github.com/surya-nara0123/swiftship/middleware"
 	_ "github.com/surya-nara0123/swiftship/types"
 
 	"github.com/gofiber/fiber/v2"
@@ -129,6 +130,17 @@ func main() {
 	})
 	app.Post("/razorpay", func(c *fiber.Ctx) error {
 		return endpoints.CallRazorPay(c, DbInterface)
+	})
+
+	//cookie endpoints
+	app.Get("/getcookies", func(c *fiber.Ctx) error {
+		return middleware.GetCookies(c)
+	})
+	app.Get("/clearcookies", func(c *fiber.Ctx) error {
+		return middleware.ClearCookies(c)
+	})
+	app.Post("/setcookie", func(c *fiber.Ctx) error {
+		return middleware.SetCookie(c)
 	})
 
 	// Start the server
