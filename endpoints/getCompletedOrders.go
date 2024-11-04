@@ -17,6 +17,7 @@ func GetCompletedOrders(c *fiber.Ctx, dbInterface database.DatabaseStruct) error
 		})
 	}
 	fmt.Println(cookies)
+	fmt.Println("GetCompletedOrders")
 	user := types.FoodItemUserId{}
 
 	if err := c.BodyParser(&user); err != nil {
