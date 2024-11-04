@@ -1,22 +1,20 @@
 package endpoints
 
 import (
-	"fmt"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/surya-nara0123/swiftship/database"
 	"github.com/surya-nara0123/swiftship/types"
 )
 
 func GetActiveOrders(c *fiber.Ctx, dbInterface database.DatabaseStruct) error {
-	var cookies map[string]string
-	err1 := c.CookieParser(&cookies)
-	if err1 != nil {
-		return c.Status(400).JSON(fiber.Map{
-			"error": "Cannot parse cookies",
-		})
-	}
-	fmt.Println(cookies)
+	// var cookies map[string]string
+	// err1 := c.CookieParser(&cookies)
+	// if err1 != nil {
+	// 	return c.Status(400).JSON(fiber.Map{
+	// 		"error": "Cannot parse cookies",
+	// 	})
+	// }
+	// fmt.Println(cookies)
 	user := types.FoodItemUserId{}
 
 	if err := c.BodyParser(&user); err != nil {

@@ -9,14 +9,14 @@ import (
 )
 
 func GetCompletedOrders(c *fiber.Ctx, dbInterface database.DatabaseStruct) error {
-	var cookies map[string]string
-	err1 := c.CookieParser(&cookies)
-	if err1 != nil {
-		return c.Status(400).JSON(fiber.Map{
-			"error": "Cannot parse cookies",
-		})
-	}
-	fmt.Println(cookies)
+	// var cookies map[string]string
+	// err1 := c.CookieParser(&cookies)
+	// if err1 != nil {
+	// 	return c.Status(400).JSON(fiber.Map{
+	// 		"error": "Cannot parse cookies",
+	// 	})
+	// }
+	// fmt.Println(cookies)
 	fmt.Println("GetCompletedOrders")
 	user := types.FoodItemUserId{}
 
