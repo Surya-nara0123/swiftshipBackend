@@ -1,6 +1,7 @@
 package endpoints
 
 import (
+	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/surya-nara0123/swiftship/database"
 	"github.com/surya-nara0123/swiftship/types"
@@ -15,11 +16,14 @@ func ChangeAvailability(c *fiber.Ctx, dbInterface database.DatabaseStruct) error
 		})
 	}
 
+	fmt.Println(foodId)
+	
 	db, _ := dbInterface.GetDbData()
-
+	
 	foodItem := types.FoodItems{}
 	db.First(&foodItem, "uid = ?", foodId.FoodId)
-
+	
+	fmt.Println(foodId)
 	foodItem.IsAvailable = !foodItem.IsAvailable
 
 	db.Save(&foodItem)
