@@ -26,7 +26,7 @@ func ChangeAvailability(c *fiber.Ctx, dbInterface database.DatabaseStruct) error
 	fmt.Println(foodId)
 	foodItem.IsAvailable = !foodItem.IsAvailable
 
-	db.Save(&foodItem)
+	db.Where("uid = ?", foodId.FoodId).Save(&foodItem)
 
 	return c.JSON(fiber.Map{})
 
