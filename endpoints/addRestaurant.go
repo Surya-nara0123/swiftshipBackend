@@ -34,7 +34,7 @@ func AddRestaurant(c *fiber.Ctx, DbInterface database.DatabaseStruct) error {
 		Location:   restaurant.Location,
 		IsVeg:      restaurant.IsVeg,
 		VendorName: restaurant.VendorName,
-		StatusId:   1,
+		StatusId:   false,
 	}
 
 	res := db.Create(restaurantData)

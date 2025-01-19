@@ -74,7 +74,7 @@ type RestaurantData struct {
 	Location   string `bun:"location,notnull"`
 	IsVeg      bool   `bun:"is_veg,notnull"`
 	VendorName string `bun:"vendor_name,notnull"`
-	StatusId   int    `bun:"status_id, notnull"`
+	StatusId   bool   `bun:"status_id, notnull"`
 }
 
 type Food struct {
